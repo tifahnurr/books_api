@@ -63,8 +63,8 @@ class BookController extends Controller
         return response($book);
     }
 
-    public function delete(Request $request) {
-        $book = Books::findOrFail($request->book_id);
+    public function delete($book_id, Request $request) {
+        $book = Books::findOrFail($book_id);
         $status = $book->delete();
         return response(($status == 1) ? 'Deleted' : 'Fail to delete');
     }

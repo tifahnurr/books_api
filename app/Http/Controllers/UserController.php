@@ -47,6 +47,20 @@ class UserController extends Controller
             return response($e->getMessage());
         }
     }
+
+    public function update(Request $request) {
+        try {
+            // echo ($request->book_id);
+            $user = User::find($request->user_id);
+            $user->username = $request->username;
+            $user->is_admin = $request->is_admin;
+            $user->save();
+            return response($user);
+        } catch (\Exception $e) {
+            return response($e->getMessage());
+        }
+    }
+
     public function all() {
         try {
             return response(User::all());            
@@ -62,8 +76,8 @@ class UserController extends Controller
             return response($e->getMessage());
         }
     }
-    public function delete(Request $request) {
-        $user = User::findOrFail($request->user_id);
+    public function delete($user_id, Request $request) {
+        $user = User::findOrFail($user_id);
         $status = $user->delete();
         return response(($status == 1) ? 'Deleted' : 'Fail to delete');
     }

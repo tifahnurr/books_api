@@ -32,16 +32,17 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('/users', 'UserController@store');
         Route::get('/users', 'UserController@all');
         Route::get('/users/{id}', 'UserController@get');
-        Route::delete('/users', 'UserController@delete');
+        Route::put('/users', 'UserController@update');
+        Route::delete('/users/{user_id}', 'UserController@delete');
         
         Route::post('/books', 'BookController@store');
         Route::post('/books/categories', 'BookController@addCategory');
         Route::put('/books', 'BookController@update');
-        Route::delete('/books', 'BookController@delete');
+        Route::delete('/books/{book_id}', 'BookController@delete');
                 
         Route::post('/categories', 'CategoryController@store');
         Route::put('/categories', 'CategoryController@update');
-        Route::delete('/categories', 'CategoryController@delete');
+        Route::delete('/categories/{category_id}', 'CategoryController@delete');
     
     });
 });
