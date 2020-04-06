@@ -58,7 +58,7 @@ class BookController extends Controller
     public function get($id) {
         $book = Books::findOrFail($id);
         $book['rating'] = $book->ratings();
-        $book['comments'] = $book->comments->pluck(['comment']);
+        $book['comments'] = $book->comments()->where('approved', 1)->get();
         $book->categories;
         return response($book);
     }

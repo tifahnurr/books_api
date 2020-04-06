@@ -21,5 +21,25 @@ class RatingController extends Controller
             return response($e->getMessage());
         }
     }
-    
+    public function edit(Request $request) {
+        try {
+            $rating = Ratings::find($request->rating_id);
+            $rating->rating = $request->rating;
+            $rating->save();
+            return response($rating);
+        } catch (\Exception $e) {
+            return response($e->getMessage());
+        }
+    }
+
+    public function delete($rating_id) {
+        try {
+            $rating = Ratings::find($rating_id);
+            $status = $rating->delete();
+            return response($status);
+        } catch (\Exception $e) {
+            return response($e->getMessage());
+        }
+    }
+
 }

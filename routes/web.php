@@ -43,6 +43,9 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('/categories', 'CategoryController@store');
         Route::put('/categories', 'CategoryController@update');
         Route::delete('/categories/{category_id}', 'CategoryController@delete');
+
+        Route::post('/comments/approve', 'CommentController@approve');
+        Route::get('/comments', 'CommentController@all');
     
     });
 });

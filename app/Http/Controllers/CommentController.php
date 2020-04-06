@@ -21,4 +21,24 @@ class CommentController extends Controller
             return response($e->getMessage());
         }
     }
+
+    public function all() {
+        try {
+            $comments = Comments::all();
+            return response($comments);
+        } catch (\Exception $e) {
+            return response($e->getMessage());
+        }
+    }
+
+    public function approve(Request $request) {
+        try {
+            $comment = Comments::find($request->comment_id);
+            $comment->approved = 1;
+            $comment->save();
+            return response($comment);
+        } catch (\Exception $e) {
+            return response($e->getMessage());
+        }
+    }
 }
