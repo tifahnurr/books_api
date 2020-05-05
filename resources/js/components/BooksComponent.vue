@@ -8,7 +8,7 @@
                     <div class="card-body">
                         <ul id="example-1">
                             <li v-for="book in books" :key="book.book_id">
-                                {{ book.title }} 
+                                <router-link :to="{name: 'book_detail', params: {book_id: book.book_id}}">{{ book.title }}</router-link>
                                 <br>
                                 {{ book.category }}
                             </li>
@@ -34,7 +34,7 @@
                 newbook: {}
             }
         },
-        mounted() {
+        created() {
             console.log('Component mounted.');
             console.log(this.$cookies.get('token'));
             let uri= 'http://localhost:8000/api/books';

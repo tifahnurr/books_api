@@ -55,7 +55,7 @@ Route::middleware(['auth:api'])->group(function () {
 
 // Route::post('api/users', 'UserController@store');
 
-Route::get('/{x?}', function() {
+Route::get('/{x?}/{y?}', function() {
     return view('template');
 });
 

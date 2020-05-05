@@ -18,7 +18,9 @@ Vue.use(VueCookies)
 import HomeComponent from './components/HomeComponent.vue';
 import LoginComponent from './components/LoginComponent.vue';
 import BooksComponent from './components/BooksComponent.vue';
+import BookDetailComponent from './components/BookDetailComponent.vue';
 import CategoryComponent from './components/CategoryComponent.vue';
+import CommentsComponent from './components/AllCommentComponent.vue';
 
 const routes = [
   {
@@ -40,6 +42,17 @@ const routes = [
       name: 'categories',
       path: '/categories',
       component: CategoryComponent
+  },
+  {
+      name: 'book_detail',
+      path: '/books/:book_id',
+      component: BookDetailComponent,
+      props: true
+  },
+  {
+      name: 'comments',
+      path: '/comments',
+      component: CommentsComponent
   }
 ];
 
