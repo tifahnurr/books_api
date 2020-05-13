@@ -35,7 +35,13 @@ class Books extends Model
     }
 
     public function comments() {
-        return $this->hasMany('App\Comments', 'book_id');
+        $comments = $this->hasMany('App\Comments', 'book_id');
+        $index=0;
+        foreach ($comments as $comment) {
+            $comments[$index]->username = $comment->username();
+            $index++;
+        }
+        return $comments;
     }
     public function ratings() {
         $rating = $this->hasMany('App\Ratings', 'book_id')->avg('rating');

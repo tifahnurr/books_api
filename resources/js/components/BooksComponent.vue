@@ -9,15 +9,16 @@
                         <ul id="example-1">
                             <li v-for="book in books" :key="book.book_id">
                                 <router-link :to="{name: 'book_detail', params: {book_id: book.book_id}}">{{ book.title }}</router-link>
-                                <br>
-                                {{ book.category }}
+                                <small class="text-muted">{{ book.category }}</small>
                             </li>
                         </ul>
+                        <div v-if="this.$cookies.get('user_data').is_admin == 1">
                         <h5> Add new </h5>
                         <form @submit.prevent="newBook">
                             <input placeholder="Book Title" v-model='newbook.title'>
                             <button class="btn btn-primary" type="submit">Submit</button>
                         </form>
+                        </div>
                     </div>
                     
                 </div>
@@ -61,7 +62,7 @@
                     console.log(response.data);
                     this.books.push(response.data);
                 });
-            }
+            },
         },
     }
 </script>

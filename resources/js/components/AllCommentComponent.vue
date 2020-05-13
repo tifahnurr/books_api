@@ -7,11 +7,17 @@
 
                     <div class="card-body">
                         <ul id="example-1">
-                            <li v-for="comment in comments" :key="comment.comment_id">
-                                {{ comment.user_id }} <br>
-                                {{ comment.book_id }} <br>
-                                {{ comment.comment }} <br>
-                                {{ comment.approved }}
+                            <li class="container" v-for="comment in comments" :key="comment.comment_id">
+                                <div class="row">
+                                    <div class="col">
+                                        {{ comment.username }} - {{ comment.book_title }}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        {{ comment.comment }}
+                                    </div> 
+                                </div>
                                 <button v-if="comment.approved == 0" v-on:click="approveComment(comment.comment_id)">Approve</button>
                             </li>
                         </ul>

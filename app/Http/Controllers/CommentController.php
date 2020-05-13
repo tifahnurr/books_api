@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Ramsey\Uuid\Uuid;
 use App\Comments;
+use App\User;
+use App\Books;
 
 class CommentController extends Controller
 {
@@ -25,6 +27,10 @@ class CommentController extends Controller
     public function all() {
         try {
             $comments = Comments::all();
+            foreach ($comments as $comment) {
+                $comment['username'] = $comment->username();
+                $comment['book_title'] = $comment->book_title();
+            }
             return response($comments);
         } catch (\Exception $e) {
             return response($e->getMessage());

@@ -14,6 +14,9 @@
         <li class="nav-item">
           <router-link to="/categories" class="nav-link">Category</router-link>
         </li>
+        <li class="nav-item">
+          <router-link to="/comments" class="nav-link">Comments</router-link>
+        </li>
       </ul>
     </nav><br />
     <transition name="fade">
@@ -32,7 +35,7 @@
 </style>
 
 <script>
-
+    
     export default{
     }
 </script>

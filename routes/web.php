@@ -25,11 +25,12 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('/comments', 'CommentController@store');
         Route::post('/ratings', 'RatingController@store');
         Route::get('/books/{id}', 'BookController@get');
+        Route::get('/user', 'UserController@getCurrentUser');
+        Route::get('/users/{id}', 'UserController@get');
 
         Route::middleware(['can:admin'])->group(function () {
             Route::post('/users', 'UserController@store');
             Route::get('/users', 'UserController@all');
-            Route::get('/users/{id}', 'UserController@get');
             Route::put('/users', 'UserController@update');
             Route::delete('/users/{user_id}', 'UserController@delete');
             
@@ -55,7 +56,7 @@ Route::middleware(['auth:api'])->group(function () {
 
 // Route::post('api/users', 'UserController@store');
 
-Route::get('/{x?}/{y?}', function() {
+Route::get('/{x?}/{y?}/{z?}', function() {
     return view('template');
 });
 

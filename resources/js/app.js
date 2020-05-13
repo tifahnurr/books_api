@@ -21,6 +21,9 @@ import BooksComponent from './components/BooksComponent.vue';
 import BookDetailComponent from './components/BookDetailComponent.vue';
 import CategoryComponent from './components/CategoryComponent.vue';
 import CommentsComponent from './components/AllCommentComponent.vue';
+import EditBookComponent from './components/EditBookComponent.vue';
+import AllUsersComponent from './components/AllUsersComponent.vue';
+import NewUserComponent from './components/NewUserComponent.vue';
 
 const routes = [
   {
@@ -53,6 +56,22 @@ const routes = [
       name: 'comments',
       path: '/comments',
       component: CommentsComponent
+  },
+  {
+    name: 'edit_book',
+    path: '/books/:book_id/edit',
+    component: EditBookComponent,
+    props: true
+  },
+  {
+    name: 'users',
+    path: '/users',
+    component: AllUsersComponent
+  },
+  {
+    name: 'new_user',
+    path: '/users/new',
+    component: NewUserComponent
   }
 ];
 

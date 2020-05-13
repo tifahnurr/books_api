@@ -76,6 +76,14 @@ class UserController extends Controller
             return response($e->getMessage());
         }
     }
+    public function getCurrentUser() {
+        try {
+            $user = auth()->user();
+            return response($user);
+        } catch(\Exception $e) {
+            return response($e->getMessage());
+        }
+    }
     public function delete($user_id, Request $request) {
         $user = User::findOrFail($user_id);
         $status = $user->delete();

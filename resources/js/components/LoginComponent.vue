@@ -37,6 +37,17 @@
                     if (response.data != "") {
                         this.$cookies.set('token', response.data);
                         this.$router.push({name: 'home'});
+                        let uri = 'http://localhost:8000/api/user';
+                        let auth = 'Bearer ' + this.$cookies.get('token');
+                        this.axios.get(uri, {
+                            headers: {
+                                'Authorization': auth
+                            }
+                        } ,this.user).then((response) => {
+                            this.$cookies.set('user_data', response.data);
+                            console.log(this.$cookies.get('user_data'));
+                        });
+                            
                     }
                 });
             }

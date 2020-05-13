@@ -7,6 +7,7 @@
         <title>Laravel</title>
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet" type="text/css">
         <link href="{{ mix('css/app.css') }}" type="text/css" rel="stylesheet" />
+        <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
         <meta name="csrf-token" value="{{ csrf_token() }}" />
     </head>
     <body>
@@ -14,5 +15,6 @@
           <example-component></example-component>
         </div>
         <script src="{{ mix('js/app.js') }}" type="text/javascript"></script>
+        
     </body>
 </html>
