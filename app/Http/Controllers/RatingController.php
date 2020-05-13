@@ -10,12 +10,18 @@ class RatingController extends Controller
 {
     public function store(Request $request) {
         try {
-            $rating = new Ratings;
-            $rating->rating_id = Uuid::uuid4()->getHex();
-            $rating->user_id = auth()->user()->user_id;
-            $rating->book_id = $request->book_id;
-            $rating->rating = $request->rating;
-            $rating->save();
+            $rating = Ratings::where(['user_id' => auth()->user()->user_id, 'book_id' => $request->book_id])->first();
+            if ($rating) {
+                $rating->rating = $request->rating;
+                $rating->save();
+            } else {
+                $rating = new Ratings;
+                $rating->rating_id = Uuid::uuid4()->getHex();
+                $rating->user_id = auth()->user()->user_id;
+                $rating->book_id = $request->book_id;
+                $rating->rating = $request->rating;
+                $rating->save();
+            }
             return response($rating);
         } catch (\Exception $e) {
             return response($e->getMessage());
@@ -32,6 +38,14 @@ class RatingController extends Controller
         }
     }
 
+    public function getRatingOfBook($book_id) {
+        try {
+            $rating = Ratings::where(['user_id' => auth()->user()->user_id, 'book_id' => $book_id])->first();
+            return response($rating);
+        } catch (\Exception $e) {
+            return response($e->getMessage());
+        }
+    }
     public function delete($rating_id) {
         try {
             $rating = Ratings::find($rating_id);

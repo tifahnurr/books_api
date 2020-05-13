@@ -6,21 +6,26 @@
                     <div class="card-header">Book List</div>
 
                     <div class="card-body">
-                        <ul id="example-1">
-                            <li class="container" v-for="comment in comments" :key="comment.comment_id">
-                                <div class="row">
-                                    <div class="col">
-                                        {{ comment.username }} - {{ comment.book_title }}
+                            <div class="card my-4" v-for="comment in comments" :key="comment.comment_id">
+                                <div class="card-header">
+                                    <div class="row">
+                                        <div class="col text-info">
+                                            {{ comment.username }}
+                                        </div>
+                                        <div class="col text-right">
+                                            on <span class="text-info">{{ comment.book_title }} </span>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="card-body row">
                                     <div class="col">
                                         {{ comment.comment }}
                                     </div> 
                                 </div>
-                                <button v-if="comment.approved == 0" v-on:click="approveComment(comment.comment_id)">Approve</button>
-                            </li>
-                        </ul>
+                                <div v-if="comment.approved == 0" class="card-footer text-center">
+                                    <button class="btn btn-primary" style="width:100%" v-on:click="approveComment(comment.comment_id)">Approve</button>
+                                </div>
+                            </div>
                     </div>
                     
                 </div>

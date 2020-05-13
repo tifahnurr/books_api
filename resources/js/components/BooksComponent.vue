@@ -9,6 +9,7 @@
                         <ul id="example-1">
                             <li v-for="book in books" :key="book.book_id">
                                 <router-link :to="{name: 'book_detail', params: {book_id: book.book_id}}">{{ book.title }}</router-link>
+                                <br>
                                 <small class="text-muted">{{ book.category }}</small>
                             </li>
                         </ul>

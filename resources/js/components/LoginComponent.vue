@@ -7,9 +7,19 @@
 
                     <div class="card-body">
                         <form  @submit.prevent="login">
-                            <input placeholder="username" v-model='user.username'>
-                            <input placeholder="password" type="password" v-model='user.password'>
-                            <button class="btn btn-primary" type="submit">Login</button>
+                            <div class="row">
+                                <div class="col">
+                                    <input class="form-control" placeholder="username" v-model='user.username'>
+                                </div>
+                                <div class="col">
+                                    <input class="form-control" placeholder="password" type="password" v-model='user.password'>
+                                </div>
+                            </div>
+                            <div class="row py-1">
+                                <div class="col">
+                                    <button class="btn btn-primary" type="submit">Login</button>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>

@@ -4888,6 +4888,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({});
 
 /***/ }),
@@ -4901,6 +4904,11 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
 //
 //
 //
@@ -5188,6 +5196,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -5195,7 +5210,9 @@ __webpack_require__.r(__webpack_exports__);
       categories: {},
       newcomment: {},
       newrating: {},
-      comments: []
+      comments: [],
+      rate: 0,
+      rated: false
     };
   },
   created: function created() {
@@ -5219,24 +5236,11 @@ __webpack_require__.r(__webpack_exports__);
         _this.loadDetail();
       });
     },
-    newRating: function newRating() {
-      var _this2 = this;
-
-      var uri = 'http://localhost:8000/api/ratings';
-      var auth = 'Bearer ' + this.$cookies.get('token');
-      this.newrating.book_id = this.book_id;
-      this.axios.post(uri, this.newrating, {
-        headers: {
-          'Authorization': auth
-        }
-      }).then(function (response) {
-        _this2.loadDetail();
-      });
-    },
     loadComment: function loadComment() {
       var auth = 'Bearer ' + this.$cookies.get('token');
       var apps = this;
       var length = this.comments.length;
+      var a = 0;
       this.comments.forEach(function (item, index) {
         var uri = "http://localhost:8000/api/users/" + item.user_id;
         apps.axios.get(uri, {
@@ -5246,15 +5250,39 @@ __webpack_require__.r(__webpack_exports__);
         }).then(function (response) {
           console.log(response.data);
           apps.comments[index].username = response.data.username;
+          a++;
+          console.log(index);
 
-          if (index + 1 == length) {
+          if (a == length) {
             apps.$forceUpdate();
           }
         });
       });
     },
+    rateBook: function rateBook() {
+      var apps = this;
+
+      if (!this.rated) {
+        apps.rated = true;
+        setTimeout(function () {
+          console.log(apps.rate);
+          var uri = 'http://localhost:8000/api/ratings';
+          var auth = 'Bearer ' + apps.$cookies.get('token');
+          apps.newrating.book_id = apps.book_id;
+          apps.newrating.rating = apps.rate;
+          apps.axios.post(uri, apps.newrating, {
+            headers: {
+              'Authorization': auth
+            }
+          }).then(function (response) {
+            apps.loadDetail();
+          });
+          apps.rated = false;
+        }, 50);
+      }
+    },
     loadDetail: function loadDetail() {
-      var _this3 = this;
+      var _this2 = this;
 
       var uri = 'http://localhost:8000/api/books/' + this.book_id;
       var auth = 'Bearer ' + this.$cookies.get('token');
@@ -5265,13 +5293,25 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (response) {
         console.log(response.data);
-        _this3.book = response.data;
-        console.log(_this3.book.comments[0].comment);
-        console.log(_this3.book.categories);
-        _this3.book.rating = Math.round(_this3.book.rating * 100) / 100;
-        _this3.comments = _this3.book.comments;
+        _this2.book = response.data;
+        console.log(_this2.book.comments[0].comment);
+        console.log(_this2.book.categories);
+        _this2.book.rating = Math.round(_this2.book.rating * 100) / 100;
+        _this2.comments = _this2.book.comments;
 
-        _this3.loadComment();
+        _this2.loadComment();
+
+        var uri = 'http://localhost:8000/api/books/' + _this2.book_id + '/rating';
+
+        _this2.axios.get(uri, {
+          headers: {
+            'Authorization': auth
+          }
+        }).then(function (response) {
+          if (response.data != null) {
+            _this2.rate = response.data.rating;
+          }
+        });
       });
     }
   },
@@ -5297,6 +5337,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
 //
 //
 //
@@ -5732,6 +5773,16 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -42345,18 +42396,35 @@ var render = function() {
               1
             ),
             _vm._v(" "),
-            _c(
-              "li",
-              { staticClass: "nav-item" },
-              [
-                _c(
-                  "router-link",
-                  { staticClass: "nav-link", attrs: { to: "/comments" } },
-                  [_vm._v("Comments")]
+            this.$cookies.get("user_data").is_admin == 1
+              ? _c(
+                  "li",
+                  { staticClass: "nav-item" },
+                  [
+                    _c(
+                      "router-link",
+                      { staticClass: "nav-link", attrs: { to: "/comments" } },
+                      [_vm._v("Comments")]
+                    )
+                  ],
+                  1
                 )
-              ],
-              1
-            )
+              : _vm._e(),
+            _vm._v(" "),
+            this.$cookies.get("user_data").is_admin == 1
+              ? _c(
+                  "li",
+                  { staticClass: "nav-item" },
+                  [
+                    _c(
+                      "router-link",
+                      { staticClass: "nav-link", attrs: { to: "/users" } },
+                      [_vm._v("Users")]
+                    )
+                  ],
+                  1
+                )
+              : _vm._e()
           ])
         ]
       ),
@@ -42395,41 +42463,50 @@ var render = function() {
         _c("div", { staticClass: "card" }, [
           _c("div", { staticClass: "card-header" }, [_vm._v("Book List")]),
           _vm._v(" "),
-          _c("div", { staticClass: "card-body" }, [
-            _c(
-              "ul",
-              { attrs: { id: "example-1" } },
-              _vm._l(_vm.comments, function(comment) {
-                return _c(
-                  "li",
-                  { key: comment.comment_id, staticClass: "container" },
-                  [
+          _c(
+            "div",
+            { staticClass: "card-body" },
+            _vm._l(_vm.comments, function(comment) {
+              return _c(
+                "div",
+                { key: comment.comment_id, staticClass: "card my-4" },
+                [
+                  _c("div", { staticClass: "card-header" }, [
                     _c("div", { staticClass: "row" }, [
-                      _c("div", { staticClass: "col" }, [
+                      _c("div", { staticClass: "col text-info" }, [
                         _vm._v(
-                          "\n                                    " +
+                          "\n                                        " +
                             _vm._s(comment.username) +
-                            " - " +
-                            _vm._s(comment.book_title) +
-                            "\n                                "
+                            "\n                                    "
                         )
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "col text-right" }, [
+                        _vm._v("\n                                        on "),
+                        _c("span", { staticClass: "text-info" }, [
+                          _vm._v(_vm._s(comment.book_title) + " ")
+                        ])
                       ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "row" }, [
-                      _c("div", { staticClass: "col" }, [
-                        _vm._v(
-                          "\n                                    " +
-                            _vm._s(comment.comment) +
-                            "\n                                "
-                        )
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    comment.approved == 0
-                      ? _c(
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "card-body row" }, [
+                    _c("div", { staticClass: "col" }, [
+                      _vm._v(
+                        "\n                                    " +
+                          _vm._s(comment.comment) +
+                          "\n                                "
+                      )
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  comment.approved == 0
+                    ? _c("div", { staticClass: "card-footer text-center" }, [
+                        _c(
                           "button",
                           {
+                            staticClass: "btn btn-primary",
+                            staticStyle: { width: "100%" },
                             on: {
                               click: function($event) {
                                 return _vm.approveComment(comment.comment_id)
@@ -42438,13 +42515,13 @@ var render = function() {
                           },
                           [_vm._v("Approve")]
                         )
-                      : _vm._e()
-                  ]
-                )
-              }),
-              0
-            )
-          ])
+                      ])
+                    : _vm._e()
+                ]
+              )
+            }),
+            0
+          )
         ])
       ])
     ])
@@ -42707,6 +42784,120 @@ var render = function() {
               ),
               _vm._v(" "),
               _c("div", { staticClass: "col text-right" }, [
+                _c(
+                  "div",
+                  {
+                    staticClass: "text-right",
+                    attrs: { id: "rating" },
+                    on: {
+                      click: function($event) {
+                        return _vm.rateBook()
+                      }
+                    }
+                  },
+                  [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.rate,
+                          expression: "rate"
+                        }
+                      ],
+                      attrs: { id: "rating-1", type: "radio", value: "5" },
+                      domProps: { checked: _vm._q(_vm.rate, "5") },
+                      on: {
+                        change: function($event) {
+                          _vm.rate = "5"
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("label", { attrs: { for: "rating-1" } }),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.rate,
+                          expression: "rate"
+                        }
+                      ],
+                      attrs: { id: "rating-2", type: "radio", value: "4" },
+                      domProps: { checked: _vm._q(_vm.rate, "4") },
+                      on: {
+                        change: function($event) {
+                          _vm.rate = "4"
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("label", { attrs: { for: "rating-2" } }),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.rate,
+                          expression: "rate"
+                        }
+                      ],
+                      attrs: { id: "rating-3", type: "radio", value: "3" },
+                      domProps: { checked: _vm._q(_vm.rate, "3") },
+                      on: {
+                        change: function($event) {
+                          _vm.rate = "3"
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("label", { attrs: { for: "rating-3" } }),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.rate,
+                          expression: "rate"
+                        }
+                      ],
+                      attrs: { id: "rating-4", type: "radio", value: "2" },
+                      domProps: { checked: _vm._q(_vm.rate, "2") },
+                      on: {
+                        change: function($event) {
+                          _vm.rate = "2"
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("label", { attrs: { for: "rating-4" } }),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.rate,
+                          expression: "rate"
+                        }
+                      ],
+                      attrs: { id: "rating-5", type: "radio", value: "1" },
+                      domProps: { checked: _vm._q(_vm.rate, "1") },
+                      on: {
+                        change: function($event) {
+                          _vm.rate = "1"
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("label", { attrs: { for: "rating-5" } })
+                  ]
+                ),
+                _vm._v(" "),
                 _c("div", { staticClass: "row" }, [
                   _c("div", { staticClass: "col" }, [
                     _c("span", {
@@ -42802,25 +42993,25 @@ var render = function() {
                   _vm._l(_vm.comments, function(comment) {
                     return _c(
                       "div",
-                      { key: comment.comment_id, staticClass: "container" },
+                      { key: comment.comment_id, staticClass: "card my-3" },
                       [
-                        _c("div", { staticClass: "row" }, [
-                          _c("div", { staticClass: "col" }, [
-                            _vm._v(
-                              "\n                                " +
-                                _vm._s(comment.username) +
-                                "\n                            "
-                            )
-                          ])
+                        _c("div", { staticClass: "card-header text-info" }, [
+                          _vm._v(
+                            "\n                                " +
+                              _vm._s(comment.username) +
+                              "\n                        "
+                          )
                         ]),
                         _vm._v(" "),
-                        _c("div", { staticClass: "row" }, [
-                          _c("div", { staticClass: "col" }, [
-                            _vm._v(
-                              "\n                                " +
-                                _vm._s(comment.comment) +
-                                "\n                            "
-                            )
+                        _c("div", { staticClass: "card-body" }, [
+                          _c("div", { staticClass: "row" }, [
+                            _c("div", { staticClass: "col" }, [
+                              _vm._v(
+                                "\n                                " +
+                                  _vm._s(comment.comment) +
+                                  "\n                            "
+                              )
+                            ])
                           ])
                         ])
                       ]
@@ -42828,47 +43019,7 @@ var render = function() {
                   }),
                   0
                 )
-              : _vm._e(),
-            _vm._v(" "),
-            _c("h5", [_vm._v("Add rating")]),
-            _vm._v(" "),
-            _c(
-              "form",
-              {
-                on: {
-                  submit: function($event) {
-                    $event.preventDefault()
-                    return _vm.newRating($event)
-                  }
-                }
-              },
-              [
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.newrating.rating,
-                      expression: "newrating.rating"
-                    }
-                  ],
-                  attrs: { type: "number", min: "0", max: "5" },
-                  domProps: { value: _vm.newrating.rating },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
-                      }
-                      _vm.$set(_vm.newrating, "rating", $event.target.value)
-                    }
-                  }
-                }),
-                _vm._v(" "),
-                _c("button", { staticClass: "btn btn-primary" }, [
-                  _vm._v("Submit")
-                ])
-              ]
-            )
+              : _vm._e()
           ])
         ])
       ])
@@ -42933,6 +43084,8 @@ var render = function() {
                       },
                       [_vm._v(_vm._s(book.title))]
                     ),
+                    _vm._v(" "),
+                    _c("br"),
                     _vm._v(" "),
                     _c("small", { staticClass: "text-muted" }, [
                       _vm._v(_vm._s(book.category))
@@ -43225,6 +43378,7 @@ var render = function() {
                       expression: "new_title"
                     }
                   ],
+                  staticStyle: { width: "100%" },
                   attrs: { type: "text" },
                   domProps: { value: _vm.new_title },
                   on: {
@@ -43507,53 +43661,57 @@ var render = function() {
                 }
               },
               [
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.user.username,
-                      expression: "user.username"
-                    }
-                  ],
-                  attrs: { placeholder: "username" },
-                  domProps: { value: _vm.user.username },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
+                _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.user.username,
+                          expression: "user.username"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { placeholder: "username" },
+                      domProps: { value: _vm.user.username },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.user, "username", $event.target.value)
+                        }
                       }
-                      _vm.$set(_vm.user, "username", $event.target.value)
-                    }
-                  }
-                }),
-                _vm._v(" "),
-                _c("input", {
-                  directives: [
-                    {
-                      name: "model",
-                      rawName: "v-model",
-                      value: _vm.user.password,
-                      expression: "user.password"
-                    }
-                  ],
-                  attrs: { placeholder: "password", type: "password" },
-                  domProps: { value: _vm.user.password },
-                  on: {
-                    input: function($event) {
-                      if ($event.target.composing) {
-                        return
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col" }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.user.password,
+                          expression: "user.password"
+                        }
+                      ],
+                      staticClass: "form-control",
+                      attrs: { placeholder: "password", type: "password" },
+                      domProps: { value: _vm.user.password },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(_vm.user, "password", $event.target.value)
+                        }
                       }
-                      _vm.$set(_vm.user, "password", $event.target.value)
-                    }
-                  }
-                }),
+                    })
+                  ])
+                ]),
                 _vm._v(" "),
-                _c(
-                  "button",
-                  { staticClass: "btn btn-primary", attrs: { type: "submit" } },
-                  [_vm._v("Login")]
-                )
+                _vm._m(0)
               ]
             )
           ])
@@ -43562,7 +43720,22 @@ var render = function() {
     ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row py-1" }, [
+      _c("div", { staticClass: "col" }, [
+        _c(
+          "button",
+          { staticClass: "btn btn-primary", attrs: { type: "submit" } },
+          [_vm._v("Login")]
+        )
+      ])
+    ])
+  }
+]
 render._withStripped = true
 
 

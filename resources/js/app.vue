@@ -14,8 +14,11 @@
         <li class="nav-item">
           <router-link to="/categories" class="nav-link">Category</router-link>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" v-if="this.$cookies.get('user_data').is_admin == 1">
           <router-link to="/comments" class="nav-link">Comments</router-link>
+        </li>
+        <li class="nav-item" v-if="this.$cookies.get('user_data').is_admin == 1">
+          <router-link to="/users" class="nav-link">Users</router-link>
         </li>
       </ul>
     </nav><br />

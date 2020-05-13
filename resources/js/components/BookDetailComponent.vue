@@ -12,6 +12,18 @@
                                 </small>
                             </div>
                             <div class="col text-right">
+                                    <div id="rating" v-on:click="rateBook()" class="text-right">
+                                        <input id="rating-1" v-model="rate" type="radio" value=5>
+                                        <label for="rating-1"></label>
+                                        <input id="rating-2" v-model="rate" type="radio" value=4>
+                                        <label for="rating-2"></label>
+                                        <input id="rating-3" v-model="rate" type="radio" value=3>
+                                        <label for="rating-3"></label>
+                                        <input id="rating-4" v-model="rate" type="radio" value=2>
+                                        <label for="rating-4"></label>
+                                        <input id="rating-5" v-model="rate" type="radio" value=1>
+                                        <label for="rating-5"></label>
+                                    </div>
                                 <div class="row">
                                     <div class="col">
                                         <span class="fa fa-star fa-fw" aria-hidden="true" style="color:gold"></span> {{ book.rating }}
@@ -37,24 +49,19 @@
                             </div>
                         </form>
                         <div v-if="comments">
-                        <div class="container" v-for="comment in comments" :key="comment.comment_id">
-                            <div class="row">
-                                <div class="col">
+                        <div class="card my-3" v-for="comment in comments" :key="comment.comment_id">
+                            <div class="card-header text-info">
                                     {{ comment.username }}
-                                </div>
                             </div>
-                            <div class="row">
+                            <div class="card-body">
+                                <div class="row">
                                 <div class="col">
                                     {{ comment.comment }}
                                 </div>
+                                </div>
                             </div>
                         </div>
                         </div>
-                        <h5>Add rating</h5>
-                        <form @submit.prevent="newRating">
-                            <input type="number" min="0" max="5" v-model="newrating.rating">
-                            <button class="btn btn-primary">Submit</button>
-                        </form>
                     </div>
                     
                 </div>
@@ -72,6 +79,8 @@
                 newcomment: {},
                 newrating: {},
                 comments: [],
+                rate: 0,
+                rated: false
             }
         },
         created() {
@@ -93,23 +102,12 @@
                     this.loadDetail();
                 });
             },
-            newRating() {
-                let uri='http://localhost:8000/api/ratings';
-                let auth = 'Bearer ' + this.$cookies.get('token');
-                this.newrating.book_id=this.book_id;
-                this.axios.post(uri, this.newrating, {
-                    headers: {
-                            'Authorization': auth
-                        }
-                }).then((response) => {
-                    this.loadDetail();
-                });
-            },
             
             loadComment() {
                 let auth = 'Bearer ' + this.$cookies.get('token');
                 let apps = this;
                 let length = this.comments.length;
+                let a = 0;
                 this.comments.forEach(function(item, index) {
                     let uri="http://localhost:8000/api/users/"+item.user_id;
                     apps.axios.get(uri, {
@@ -119,12 +117,35 @@
                     }). then((response) => {
                         console.log(response.data);
                         apps.comments[index].username=response.data.username;
-                        if (index + 1 == length) {
+                        a++;
+                        console.log(index);
+                        if (a == length) {
                             apps.$forceUpdate();
                         }
                     })
                 });
                 
+            },
+            rateBook() {
+                let apps = this;
+                if (!this.rated) {
+                    apps.rated = true;
+                    setTimeout(function() { 
+                        console.log(apps.rate);
+                        let uri='http://localhost:8000/api/ratings';
+                        let auth = 'Bearer ' + apps.$cookies.get('token');
+                        apps.newrating.book_id=apps.book_id;
+                        apps.newrating.rating = apps.rate;
+                        apps.axios.post(uri, apps.newrating, {
+                            headers: {
+                                    'Authorization': auth
+                                }
+                        }).then((response) => {
+                            apps.loadDetail();
+                        });
+                        apps.rated = false;
+                    }, 50);
+                }
             },
             loadDetail() {
                 let uri= 'http://localhost:8000/api/books/'+this.book_id;
@@ -142,6 +163,16 @@
                     this.book.rating = Math.round(this.book.rating * 100) / 100
                     this.comments=this.book.comments;
                     this.loadComment();
+                    let uri= 'http://localhost:8000/api/books/'+this.book_id + '/rating'; 
+                    this.axios.get(uri, {
+                        headers: {
+                            'Authorization': auth
+                        }
+                    }). then((response) => {
+                       if (response.data != null) {
+                           this.rate = response.data.rating;
+                       }
+                    });
                 })
             }
         },

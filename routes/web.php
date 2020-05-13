@@ -25,6 +25,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('/comments', 'CommentController@store');
         Route::post('/ratings', 'RatingController@store');
         Route::get('/books/{id}', 'BookController@get');
+        Route::get('/books/{book_id}/rating', 'RatingController@getRatingOfBook');
         Route::get('/user', 'UserController@getCurrentUser');
         Route::get('/users/{id}', 'UserController@get');
 

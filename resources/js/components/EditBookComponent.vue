@@ -6,7 +6,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col">
-                                <input type="text" v-model="new_title">
+                                <input type="text" v-model="new_title" style="width:100%">
                             </div>
                             <div class="col text-right">
                                 <button type="button" class="btn btn-danger" v-on:click="deleteBook()">Delete</button>
